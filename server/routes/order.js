@@ -33,4 +33,12 @@ router.post("/order", (req, res, next) => {
     .catch(err => console.log(err.message));
 });
 
+router.delete("/order/:id", (req, res, next) => {
+  return Order.findByIdAndDelete(req.params.id)
+    .then(order => {
+      res.json(order);
+    })
+    .catch(err => console.log(err.message));
+});
+
 module.exports = router;
