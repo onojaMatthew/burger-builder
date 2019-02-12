@@ -5,6 +5,9 @@ import Button from '../../UI/Button/Button';
 class OrderSummary extends Component {
 
   render () {
+    delete this.props.ingredients["__v"];
+    delete this.props.ingredients["_id"];
+
     const ingredientSummary = Object.keys(this.props.ingredients)
     .map(igKey => {
       return [...Array(this.props.ingredients[igKey])].map((_, i) => {
