@@ -9,13 +9,18 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/WithErrorHandler/WithErrorHandler';
 import { connect } from "react-redux";
 import * as burgerBuilderActions from "../../store/actions/index";
+import Auth from '../../middleware/Auth';
 
 class BurgerBuilder extends Component {
   state = {
     purchasing: false,
+    authenticated: false,
   }
 
   componentDidMount() {
+    this.setState({
+      authenticated: Auth.isUserAuthenticated()
+    })
     this.props.onInitIngredients();
     // axios.get("/api/ingredients")
     //   .then(resp => {
@@ -42,7 +47,13 @@ class BurgerBuilder extends Component {
   }
 
   purchasingHandler = () => {
-    this.setState({ purchasing: true })
+    if (Auth.isUserAuthenticated()) {
+      this.setState({ purchasing: true });
+    } else {
+      this.props.history.push("/");
+    }
+    
+   
   }
 
   purchaseCanselHandler = () => {
@@ -68,6 +79,7 @@ class BurgerBuilder extends Component {
   // }
 
   render () {
+    const { authenticated } = this.state;
     const disabledInfo = {
       ...this.props.ingredients
     }
@@ -91,6 +103,7 @@ class BurgerBuilder extends Component {
             purchasable={this.updatePurchaseState(this.props.ingredients)}
             ordered={this.purchasingHandler}
             price={this.props.totalPrice}
+            authenticated={authenticated}
           />
         </Aux>
       )
