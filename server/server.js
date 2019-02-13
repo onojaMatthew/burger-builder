@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const orderRoute = require("./routes/order");
 const ingredientRoute = require("./routes/ingredients");
+const userRoutes = require("./routes/user");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -23,13 +24,10 @@ app.get("/", (req, res, next) => {
   res.send("Hi, Welcome to Express API");
 });
 
-// app.post("/api/order", (req, res, next) => {
-//   console.log(req.body)
-// });
-
 // Other routes will go here
 app.use("/api", orderRoute);
 app.use("/api", ingredientRoute);
+app.use("/api", userRoutes);
 
 app.listen(port, (err) => {
   if (err) {
