@@ -8,8 +8,10 @@ const ingredientRoute = require("./routes/ingredients");
 const app = express();
 const port = process.env.PORT || 5000;
 
+require("dotenv").config();
+
 mongoose.Promise = global.Promise;
-mongoose.connect("mongodb://localhost:27017/burger", { useNewUrlParser: true })
+mongoose.connect(process.env.dbUrl, { useNewUrlParser: true })
   .then((open) => console.log("Connect to database!"))
   .catch((err) => console.log(err.message));
 
