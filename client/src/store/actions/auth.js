@@ -1,5 +1,7 @@
 import axios from "axios";
 import * as actionTypes from "./actionTypes";
+import Auth from "../../middleware/Auth";
+import history from '../../middleware/history';
 
 export const authStart = () => {
   return {
@@ -7,10 +9,10 @@ export const authStart = () => {
   }
 }
 
-export const authSuccess = (authData) => {
+export const authSuccess = (token) => {
   return {
     type: actionTypes.AUTH_SUCCESS,
-    authData: authData
+    idToken: token,
   }
 }
 
@@ -21,21 +23,29 @@ export const authFail = (error) => {
   }
 }
 
-export const auth = (email, password) => {
+export const auth = (email, password, isSignup) => {
   return dispatch => {
     dispatch(authStart);
     const authData = {
       email,
       password
     }
-    axios.post("/api/user", authData)
+
+    let url = "/api/user"
+    if (!isSignup) {
+      url = "/api/login"
+    }
+    axios.post(url, authData)
       .then(response => {
-        console.log(response)
+        if (!isSignup) {
+          Auth.authenticateUser(response.data);
+          history.push("/");
+        }
         dispatch(authSuccess(response.data))
       })
       .catch(err => {
-        console.log(err.message)
-        dispatch(authFail(err));
+        console.log(err)
+        dispatch(authFail(err.error));
       });
   }
 }

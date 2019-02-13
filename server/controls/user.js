@@ -1,9 +1,12 @@
 const bcrypt = require("bcrypt");
-const { User } = require("../models/user");
+const { User, Validate } = require("../models/user");
 
 exports.postUser = (req, res, next) => {
+  const { error } = Validate(req.body);
+  if (error) return res.status(400).json(error.details[0].message);
   const email = req.body.email;
   const password = req.body.password;
+
   User.findOne({ email: email})
     .then(user => {
       if (user) return res.status(400).json(`User with the email ${email} already exist`);
@@ -24,19 +27,18 @@ exports.postUser = (req, res, next) => {
 }
 
 exports.postLogin = (req, res, next) => {
-  const email = req.body.authData.email;
-  const password = req.body.authData.password;
+  console.log(req.body)
+  const email = req.body.email;
+  const password = req.body.password;
 
   User.findOne({ email: email })
     .then(user => {
       if (!user) return res.status(404).json("User not found");
       return bcrypt.compare(password, user.password)
         .then(result => {
-          if (result) {
-            const token = user.generateToken();
+          if (!result) return res.status(400).json("Invalid email or password");
+          const token = user.generateToken();
             res.json(token);
-          }
-          res.status(400).json("Invalid email or password")
         })
     })
     .catch(err => {

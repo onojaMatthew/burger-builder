@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Router } from "react-router-dom";
 import { createStore, applyMiddleware, compose, combineReducers } from "redux";
 import { Provider } from "react-redux";
 import './index.css';
@@ -9,10 +9,13 @@ import * as serviceWorker from './serviceWorker';
 import reducer from './store/reducers/BurgerBuilder';
 import thunk from "redux-thunk";
 import orderReducer from "./store/reducers/reducers_order";
+import authReducer from "./store/reducers/auth";
+import history from './middleware/history';
 
 const rootReducers = combineReducers({
   burgerBuilder: reducer,
-  order: orderReducer
+  order: orderReducer,
+  auth: authReducer
 })
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(rootReducers, composeEnhancers(
@@ -21,9 +24,9 @@ const store = createStore(rootReducers, composeEnhancers(
 
 const app = (
   <Provider store={store}>
-    <BrowserRouter>
+    <Router history={history}>
       <App />
-    </BrowserRouter>
+    </Router>
   </Provider>
 )
 ReactDOM.render(app, document.getElementById('root'));
