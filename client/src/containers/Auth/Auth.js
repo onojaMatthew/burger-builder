@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import jwt from "jsonwebtoken";
 import axios from "axios";
 import Input from '../../components/UI/Input/Input';
 import Button from '../../components/UI/Button/Button';
